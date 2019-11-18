@@ -1,5 +1,6 @@
 import numpy as np
 import tsplib95 as tsp
+import sys
 
 
 def vertice_mais_proximo(ciclo, grafo):
@@ -46,18 +47,15 @@ def insercao_mais_proxima(grafo, ciclo, vertices_restantes, vertices_ciclo):
     return vertices_ciclo
 
 
-def main():
+def run_insercao_mais_proxima():
 
     # grafo = np.array([[0, 1, 2, 7, 5], [1, 0, 3, 4, 3], [2, 3, 0, 5, 2], [7, 4, 5, 0, 3], [5, 3, 2, 3, 0]])
 
-    problema = tsp.load_problem('testes/ftv33.atsp')
+    problema = tsp.load_problem(sys.argv[1])
 
     matrix = np.array(problema._create_explicit_matrix().numbers)
 
     grafo = matrix.reshape(-1, problema.dimension)
-
-    print("Grafo Conexo:")
-    print(grafo)
 
     ciclo_inicial = grafo[0:3, :]
     novo_ciclo_inicial = []
@@ -69,20 +67,14 @@ def main():
 
     novo_ciclo_inicial = np.array(novo_ciclo_inicial)
     novo_ciclo_inicial = novo_ciclo_inicial.reshape(-1, problema.dimension)
-    print("Ciclo inicial: ")
-    print(novo_ciclo_inicial)
     vertices_restantes = len(grafo) - 3
-    # print("Vértices restantes: ")
-    # print(vertices_restantes)
-
 
     ciclo_final = insercao_mais_proxima(grafo, novo_ciclo_inicial, vertices_restantes, vertices_ciclo)
-
     custo_total = 0
 
     for i in range(len(ciclo_final) - 1):
         custo_total += grafo[ciclo_final[i]][ciclo_final[i+1]] 
 
-    print("\nMenor custo segundo a inserção mais próxima: " + str(custo_total))
 
-main()
+    return grafo, ciclo_final
+
